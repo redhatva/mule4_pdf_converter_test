@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e53ffc9c-601d-4d20-84d1-4bbb12fd42d8" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="pdf2tiffFlow" doc:id="6abd1d42-8f4d-458b-96be-982405c57d26" >
+		<http:listener doc:name="Listener" doc:id="a5783dbd-d0ea-4887-b935-e70f008e5e08" config-ref="HTTP_Listener_config" path="/"/>
+		<file:read doc:name="Read" doc:id="9160d94b-12a1-40eb-9198-ac65d4c600d5" path="/Users/robert/Downloads/videocard-receipt.pdf"/>
+		<java:invoke-static method="convert(java.io.InputStream)" doc:name="Invoke static" doc:id="557a6bb5-852c-42fe-8979-7b467911ff1c" class="pdf2tiff.ConvertUtil">
+			<java:args ><![CDATA[#[{ arg0: payload}]]]></java:args>
+		</java:invoke-static>
+		<file:write doc:name="Write" doc:id="163d7513-47b6-42cf-9773-dd51ff64b242" path="/Users/robert/Downloads/foo.tiff"/>
+		<logger level="INFO" doc:name="Logger" doc:id="677babd6-ffe9-4828-82bd-9a76a4ab39c8" />
+	</flow>
+</mule>
